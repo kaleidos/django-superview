@@ -5,11 +5,17 @@ from django.conf import settings
 
 
 test_settings = {
-    'ROOT_URLCONF': 'tests.test_app.urls',
+    'DATABASES':{
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+        }
+    },
+    'ROOT_URLCONF': 'test_app.urls',
     'INSTALLED_APPS': [
         'superview',
-        'tests.test_app',
-    ]
+        'test_app',
+    ],
+    'SV_CSS_MENU_ACTIVE':'selected',
 }
 
 
@@ -23,9 +29,12 @@ if __name__ == '__main__':
     if not settings.configured:
         settings.configure(**test_settings)
 
-
+    if not test_args:
+        test_args = ['test_app']
+    
+    print 1
     from django.test.simple import DjangoTestSuiteRunner
     runner = DjangoTestSuiteRunner(verbosity=2, interactive=True, failfast=False)
     failures = runner.run_tests(test_args)
+    print 2
     sys.exit(failures)
-

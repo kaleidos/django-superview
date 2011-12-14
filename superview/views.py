@@ -11,9 +11,13 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 
+from superview.settings import *
+
+import re
 import datetime
 
-from superview.settings import *
+attr_rx1 = re.compile(r"^in_(.+)$", flags=re.U)
+attr_rx2 = re.compile(r"^if_menu(\d+)_is_(.+)$", flags=re.U)
 
 
 class LazyEncoder(json.JSONEncoder):
@@ -30,27 +34,33 @@ class LazyEncoder(json.JSONEncoder):
 
 class MenuActives(object):
     def __init__(self, menu_actives):
-        if type(menu_actives) == list:
+        if isinstance(menu_actives, (list, tuple)):
             self.menu_actives = menu_actives
         else:
-            self.menu_actives = [menu_actives]
+            self.menu_actives = (menu_actives,)
 
     def __getattr__(self, attr):
-        if attr.startswith("in_"):
+        res1 = attr_rx1.search(attr)
+        res2 = attr_rx2.search(attr)
+
+        if res1:
             def default_method(*args):
-                if attr[3:] in self.menu_actives:
-                    if SV_CSS_MENU_ACTIVE:
-                        return SV_CSS_MENU_ACTIVE
-                    else:
-                        return True
+                if res1.group(1) in self.menu_actives:
+                    return True if not SV_CSS_MENU_ACTIVE else SV_CSS_MENU_ACTIVE
                 else:
-                    if SV_CSS_MENU_ACTIVE:
-                        return ''
-                    else:
-                        return False
+                    return False if not SV_CSS_MENU_ACTIVE else ''
             return default_method
-        else:
-            return getattr(super(MenuActives, self), attr)
+
+        elif res2:
+            menu_index, menu_name = res2.groups()
+            def default_method(*args):
+                if self.menu_actives[int(menu_index)] == menu_name:
+                    return True if not SV_CSS_MENU_ACTIVE else SV_CSS_MENU_ACTIVE
+                else:
+                    return False if not SV_CSS_MENU_ACTIVE else ''
+            return default_method
+
+        return super(MenuActives, self).__getattr__(attr)
 
 
 class SuperView(View):
