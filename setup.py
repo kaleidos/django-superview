@@ -5,19 +5,25 @@ from setuptools import setup, find_packages
 import superview
 
 setup(
-    name='superview',
-    version=superview.get_version(),
-    description="Generic View class with extra funionality for Django",
-    long_description=open('README.rst', 'r').read(),
-    keywords='django, view',
-    author='Jesús Espino García & Sultan Imanhodjaev',
-    author_email='jespinog@gmail.com, sultan.imanhodjaev@gmail.com',
-    url='https://github.com/jespino/django-superview',
-    license='LGPL',
-    package_dir={'superview': 'superview'},
-    include_package_data=True,
-    packages=find_packages(),
-    classifiers=[
+    name = u'django-superview',
+    version = u":versiontools:superview:",
+    description = u"Generic View class with extra funionality for Django",
+    long_description = open('README.rst', 'r').read(),
+    keywords = u'django, view',
+    author = u'Jesús Espino García & Andrei Antoukh',
+    author_email = u'jespinog@gmail.com, niwi@niwi.be',
+    url = u'https://github.com/jespino/django-superview',
+    license = 'BSD',
+    #package_dir={'superview': 'superview'},
+    include_package_data = True,
+    packages = find_packages(),
+    install_requires=[
+        'distribute',
+    ],
+    setup_requires = [
+        'versiontools >= 1.8',
+    ],
+    classifiers = [
         "Programming Language :: Python",
         'Development Status :: 4 - Beta',
         'Framework :: Django',
