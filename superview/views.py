@@ -15,10 +15,11 @@ import datetime
 
 from superview.settings import *
 
+
 class LazyEncoder(json.JSONEncoder):
     """ Costum JSON encoder class for encode correctly traduction strings.
     Is for ajax response encode."""
-    
+
     def default(self, obj):
         if isinstance(obj, Promise):
             return force_unicode(obj)
@@ -26,9 +27,10 @@ class LazyEncoder(json.JSONEncoder):
             return obj.strftime('%Y-%m-%dT%H:%M:%S')
         return super(LazyEncoder, self).default(obj)
 
+
 class MenuActives(object):
     def __init__(self, menu_actives):
-        if type(menu_actives)==list:
+        if type(menu_actives) == list:
             self.menu_actives = menu_actives
         else:
             self.menu_actives = [menu_actives]
@@ -48,7 +50,7 @@ class MenuActives(object):
                         return False
             return default_method
         else:
-            return getattr(super(MenuActives, self),attr)
+            return getattr(super(MenuActives, self), attr)
 
 
 class SuperView(View):
@@ -64,7 +66,7 @@ class SuperView(View):
         return super(SuperView, self).dispatch(request, *args, **kwargs)
 
     def render_json_error(self, error_message, aditional=[]):
-        response_dict = {'success': False, 'errors':[]}
+        response_dict = {'success': False, 'errors': []}
         if isinstance(error_message, (unicode, str, Promise)):
             response_dict['errors'] = {
                 'global': [error_message],
@@ -100,7 +102,7 @@ class SuperView(View):
         template = template if template else self.template_path
         context = context if context else self.context
         context['menu_actives'] = self.menu_actives
-        return render_to_response(template, context, 
+        return render_to_response(template, context,
             context_instance=RequestContext(self.request), **kwargs)
 
     def render_redirect(self, url):
