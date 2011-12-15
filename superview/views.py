@@ -91,7 +91,7 @@ class SuperView(View):
             }
         if aditional:
             response_dict['errors']['global'] = aditional
-        return self.render_to_response(response_dict)
+        return self._render_json(response_dict)
 
     def render_json(self, context={}, ok=True):
         response = {'success': ok}
