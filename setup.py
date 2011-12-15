@@ -5,14 +5,14 @@ from setuptools import setup, find_packages
 import superview
 
 setup(
-    name = u'django-superview',
-    version = u":versiontools:superview:",
-    description = u"Generic View class with extra funionality for Django",
-    long_description = u"",
-    keywords = u'django, view',
-    author = u'Jesús Espino García & Andrei Antoukh',
-    author_email = u'jespinog@gmail.com, niwi@niwi.be',
-    url = u'https://github.com/jespino/django-superview',
+    name = 'django-superview',
+    version = ":versiontools:superview:",
+    description = "Generic View class with extra funionality for Django",
+    long_description = "",
+    keywords = 'django, view',
+    author = 'Jesús Espino García & Andrei Antoukh',
+    author_email = 'jespinog@gmail.com, niwi@niwi.be',
+    url = 'https://github.com/jespino/django-superview',
     license = 'BSD',
     include_package_data = True,
     packages = find_packages(),
