@@ -109,7 +109,7 @@ class SuperView(View):
     def render_to_response(self, template=None, context={}, **kwargs):
         template = template if template else self.template_path
         context = context if context else self.context
-        context['menu_actives'] = self.menu_actives
+        context[SV_CONTEXT_VARNAME] = getattr(self, SV_CONTEXT_VARNAME)
         return render_to_response(template, context,
             context_instance=RequestContext(self.request), **kwargs)
 
