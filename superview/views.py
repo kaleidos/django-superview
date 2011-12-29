@@ -6,6 +6,7 @@ from django.utils import simplejson as json
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
 from django.core.urlresolvers import reverse
+from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.translation import ugettext_lazy as _
 from django.template.loader import render_to_string
 from django.template import RequestContext
@@ -20,15 +21,13 @@ attr_rx1 = re.compile(r"^in_(.+)$", flags=re.U)
 attr_rx2 = re.compile(r"^if_menu(\d+)_is_(.+)$", flags=re.U)
 
 
-class LazyEncoder(json.JSONEncoder):
+class LazyEncoder(DjangoJSONEncoder):
     """ Costum JSON encoder class for encode correctly traduction strings.
     Is for ajax response encode."""
 
     def default(self, obj):
         if isinstance(obj, Promise):
             return force_unicode(obj)
-        elif isinstance(obj, datetime.datetime):
-            return obj.strftime('%Y-%m-%dT%H:%M:%S')
         return super(LazyEncoder, self).default(obj)
 
 
