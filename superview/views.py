@@ -65,10 +65,12 @@ class MenuActives(object):
 class SuperView(View):
     template_path = None
     context = {}
-    menu_actives = []
 
     def __init__(self, *args, **kwargs):
-        self.menu_actives = MenuActives(kwargs.pop('menu_actives', self.menu_actives))
+        class_menu = getattr(self, SV_CONTEXT_VARNAME, [])
+        kwargs_menu = kwargs.pop(SV_CONTEXT_VARNAME, class_menu)
+        setattr(self, SV_CONTEXT_VARNAME, MenuActives(kwargs_menu))
+
         super(SuperView, self).__init__(*args, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
@@ -76,20 +78,17 @@ class SuperView(View):
 
     def render_json_error(self, error_message, aditional=[]):
         response_dict = {'success': False, 'errors': []}
+
         if isinstance(error_message, (unicode, str, Promise)):
-            response_dict['errors'] = {
-                'global': [error_message],
-            }
+            response_dict['errors'] = {'aglobal': [error_message]}
         elif isinstance(error_message, (list, tuple)):
-            response_dict['errors'] = {
-                'global': error_message,
-            }
+            response_dict['errors'] = {'global': error_message}
         elif isinstance(error_message, dict):
-            response_dict['errors'] = {
-                'form': error_message,
-            }
+            response_dict['errors'] = {'form': error_message}
+
         if aditional:
             response_dict['errors']['global'] = aditional
+
         return self.render_to_response(response_dict)
 
     def render_json(self, context={}, ok=True):
