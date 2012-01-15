@@ -109,6 +109,7 @@ class SuperView(View):
         template = template if template else self.template_path
         context = context if context else self.context
         context[SV_CONTEXT_VARNAME] = getattr(self, SV_CONTEXT_VARNAME)
+        context['view'] = self
         return render_to_response(template, context,
             context_instance=RequestContext(self.request), **kwargs)
 
