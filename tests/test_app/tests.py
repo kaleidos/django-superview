@@ -24,3 +24,9 @@ class TestSuperView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.content,
             u'<div>9</div>\n')
+
+    def test_view_method_templatetag(self):
+        url = reverse('test-home3')
+        response = self.client.post(url)
+        self.assertEqual(response.content,
+            u'\n<div>hola mundo</div>\n')

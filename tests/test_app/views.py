@@ -17,10 +17,6 @@ class TestView2(SuperView):
     def get(self, request):
         return self.render_to_response()
 
-    @property
-    def test_method(self):
-        return 9
-        
 
 class TestView3(SuperView):
     menu_actives = ['homepage', 'about']
@@ -29,6 +25,12 @@ class TestView3(SuperView):
     def get(self, request):
         return self.render_to_response()
 
+    def post(self, request):
+        return self.render_to_response("test_page4.html")
+
     @property
-    def test_method(self):
+    def test_method(self, *args, **kwargs):
         return 9
+
+    def test_method2(self, text):
+        return text
