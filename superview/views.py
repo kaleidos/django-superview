@@ -53,9 +53,12 @@ class MenuActives(object):
         elif res2:
             menu_index, menu_name = res2.groups()
             def default_method(*args):
-                if self.menu_actives[int(menu_index)] == menu_name:
-                    return True if not SV_CSS_MENU_ACTIVE else SV_CSS_MENU_ACTIVE
-                else:
+                try:
+                    if self.menu_actives[int(menu_index)] == menu_name:
+                        return True if not SV_CSS_MENU_ACTIVE else SV_CSS_MENU_ACTIVE
+                    else:
+                        return False if not SV_CSS_MENU_ACTIVE else ''
+                except IndexError:
                     return False if not SV_CSS_MENU_ACTIVE else ''
             return default_method
 
