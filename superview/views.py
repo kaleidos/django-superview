@@ -83,7 +83,7 @@ class SuperView(View):
         response_dict = {'success': False, 'errors': []}
 
         if isinstance(error_message, (unicode, str, Promise)):
-            response_dict['errors'] = {'aglobal': [error_message]}
+            response_dict['errors'] = {'global': [error_message]}
         elif isinstance(error_message, (list, tuple)):
             response_dict['errors'] = {'global': error_message}
         elif isinstance(error_message, dict):
@@ -98,7 +98,7 @@ class SuperView(View):
         response.update(context)
         return self._render_json(response)
 
-    def _render_json(self, context, noformat=False):
+    def _render_json(self, context, noformat=True):
         """
         Returns a JSON response containing 'context' as payload
         """
