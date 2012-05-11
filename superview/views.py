@@ -2,7 +2,6 @@
 
 from django import http
 from django.views.generic import View
-from django.utils import simplejson as json
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
 from django.core.urlresolvers import reverse
@@ -15,6 +14,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from superview.settings import *
 
 import re
+import json
 import datetime
 
 attr_rx1 = re.compile(r"^in_(.+)$", flags=re.U)
