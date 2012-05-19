@@ -79,7 +79,7 @@ class SuperView(View):
     def dispatch(self, request, *args, **kwargs):
         return super(SuperView, self).dispatch(request, *args, **kwargs)
 
-    def render_json_error(self, error_message, aditional=[]):
+    def render_json_error(self, error_message, aditional=[], context={}):
         response_dict = {'success': False, 'errors': []}
 
         if isinstance(error_message, (unicode, str, Promise)):
@@ -91,6 +91,10 @@ class SuperView(View):
 
         if aditional:
             response_dict['errors']['global'] = aditional
+
+        if context:
+            response_dict.update(context)
+
         return self._render_json(response_dict)
 
     def render_json(self, context={}, ok=True):
