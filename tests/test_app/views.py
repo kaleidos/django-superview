@@ -34,3 +34,4 @@ class TestView3(SuperView):
 
     def test_method2(self, text):
         return text
+

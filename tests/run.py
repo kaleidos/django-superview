@@ -32,9 +32,7 @@ if __name__ == '__main__':
     if not test_args:
         test_args = ['test_app']
     
-    print 1
     from django.test.simple import DjangoTestSuiteRunner
     runner = DjangoTestSuiteRunner(verbosity=2, interactive=True, failfast=False)
     failures = runner.run_tests(test_args)
-    print 2
     sys.exit(failures)

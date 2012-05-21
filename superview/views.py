@@ -11,10 +11,11 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 
-from superview.settings import *
+from .settings import *
 
 import re
 import json
+import copy
 import datetime
 
 attr_rx1 = re.compile(r"^in_(.+)$", flags=re.U)
@@ -79,18 +80,41 @@ class SuperView(View):
     def dispatch(self, request, *args, **kwargs):
         return super(SuperView, self).dispatch(request, *args, **kwargs)
 
-    def render_json_error(self, error_message, aditional=[], context={}):
-        response_dict = {'success': False, 'errors': []}
+    def render_json_error(self, errors_data, aditional=[], context={}):
+        """
+        Helper method for serialize django form erros in a estructured and friendly
+        json for javascript form validators.
 
-        if isinstance(error_message, (unicode, str, Promise)):
-            response_dict['errors'] = {'global': [error_message]}
-        elif isinstance(error_message, (list, tuple)):
-            response_dict['errors'] = {'global': error_message}
-        elif isinstance(error_message, dict):
-            response_dict['errors'] = {'form': error_message}
+        How to use this::
+            
+            class MyView(SuperView):
+                def post(request):
+                    form = MyForm()
+                    if form.is_valid():
+                        return self.render_json()
+
+                    return self.render_json_error(form.errors)
+        """
+
+        response_dict = {'success': False, 'errors': {'global':[], 'form':{}}}
+
+        if isinstance(errors_data, (unicode, str, Promise)):
+            response_dict['errors']['global'].extend([errors_data])
+
+        elif isinstance(errors_data, (list, tuple)):
+            response_dict['errors']['global'].extend(list(errors_data))
+
+        elif isinstance(errors_data, dict):
+            errors = copy.deepcopy(errors_data)
+
+            if "__all__" in errors:
+                non_field_errors = list(errors.pop('__all__'))
+                response_dict['errors']['global'].extend(non_field_errors)
+
+            response_dict['errors']['form'].update(errors)
 
         if aditional:
-            response_dict['errors']['global'] = aditional
+            response_dict['errors']['global'].extend(aditional)
 
         if context:
             response_dict.update(context)
@@ -98,6 +122,12 @@ class SuperView(View):
         return self._render_json(response_dict)
 
     def render_json(self, context={}, ok=True):
+        """
+        Serialize the context variable to json. Aditionally add ``success``
+        attribute with `True` value by default. This can changed with `ok`
+        parameter.
+        """
+
         response = {'success': ok}
         response.update(context)
         return self._render_json(response)
