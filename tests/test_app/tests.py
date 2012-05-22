@@ -103,4 +103,22 @@ class TestSuperView(TestCase):
         self.assertEqual(len(data['errors']['global']), 2)
         self.assertIn('ff', data)
         self.assertIn('test2', data['errors']['global'])
+    
+    def test_json_error_response_2(self):
+        class TestForm(forms.Form):
+            foo = forms.IntegerField(required=True, label="Jojoo")
 
+            def clean(self):
+                raise forms.ValidationError(u"Test")
+
+        form = TestForm({'foo':'a'})
+        self.assertFalse(form.is_valid())
+        
+        view = SuperView()
+        data = view.render_json_error(form.errors, form=form)
+        data = json.loads(data.content)
+
+        self.assertIn('errors',  data)
+        self.assertIn('global', data['errors'])
+        self.assertEqual(len(data['errors']['global']), 1)
+        self.assertIn('fields', data['errors'])

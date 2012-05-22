@@ -80,7 +80,7 @@ class SuperView(View):
     def dispatch(self, request, *args, **kwargs):
         return super(SuperView, self).dispatch(request, *args, **kwargs)
 
-    def render_json_error(self, errors_data, aditional=[], context={}):
+    def render_json_error(self, errors_data, aditional=[], context={}, form=None):
         """
         Helper method for serialize django form erros in a estructured and friendly
         json for javascript form validators.
@@ -96,7 +96,7 @@ class SuperView(View):
                     return self.render_json_error(form.errors)
         """
 
-        response_dict = {'success': False, 'errors': {'global':[], 'form':{}}}
+        response_dict = {'success': False, 'errors': {'global':[], 'form':{}, 'fields':{}}}
 
         if isinstance(errors_data, (unicode, str, Promise)):
             response_dict['errors']['global'].extend([errors_data])
@@ -112,6 +112,11 @@ class SuperView(View):
                 response_dict['errors']['global'].extend(non_field_errors)
 
             response_dict['errors']['form'].update(errors)
+
+            if form:
+                for field in response_dict['errors']['form'].keys():
+                    response_dict['errors']['fields'][field] = {'name': form[field].label}
+                
 
         if aditional:
             response_dict['errors']['global'].extend(aditional)
