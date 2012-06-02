@@ -9,6 +9,11 @@ import json
 
 from superview.views import SuperView
 
+
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import utc, now, override
+import pytz
+
 class TestSuperView(TestCase):
     def test_first_method(self):
         url = reverse('test-home')
@@ -122,3 +127,19 @@ class TestSuperView(TestCase):
         self.assertIn('global', data['errors'])
         self.assertEqual(len(data['errors']['global']), 1)
         self.assertIn('fields', data['errors'])
+
+    def test_json_tz(self):
+        view = SuperView()
+        context_0 = {
+            'date': parse_datetime("2012-02-21 10:28:45").replace(tzinfo=utc)
+        }
+
+        with override(pytz.timezone("Australia/Sydney")):
+            response = view.render_json(context_0)
+            jdata = json.loads(response.content)
+            self.assertEqual(jdata['date'], "2012-02-21T21:28:45+11:00")
+
+        with override(pytz.timezone("Europe/Madrid")):
+            response = view.render_json(context_0)
+            jdata = json.loads(response.content)
+            self.assertEqual(jdata['date'], "2012-02-21T11:28:45+01:00")

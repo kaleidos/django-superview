@@ -16,6 +16,7 @@ test_settings = {
         'test_app',
     ],
     'SV_CSS_MENU_ACTIVE':'selected',
+    'USE_TZ': True,
 }
 
 

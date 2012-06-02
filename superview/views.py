@@ -94,7 +94,6 @@ class JSONMixin(object):
                 for field in response_dict['errors']['form'].keys():
                     response_dict['errors']['fields'][field] = {'name': form[field].label}
                 
-
         if aditional:
             response_dict['errors']['global'].extend(aditional)
 
