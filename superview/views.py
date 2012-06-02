@@ -53,6 +53,7 @@ class JSONMixin(object):
                 cls=LazyEncoder, sort_keys=True), mimetype="text/plain")
         return http.HttpResponse(json.dumps(context, cls=LazyEncoder), \
                                                     mimetype="text/plain")
+
     def render_json_error(self, errors_data, aditional=[], context={}, form=None):
         """
         Helper method for serialize django form erros in a estructured and friendly
@@ -68,6 +69,9 @@ class JSONMixin(object):
 
                     return self.render_json_error(form.errors)
         """
+
+        assert isinstance(aditional, (list, tuple)), "aditional parameter must be a list or a tuple."
+        assert isinstance(context, dict), "context parameter must be a dict"
 
         response_dict = {'success': False, 'errors': {'global':[], 'form':{}, 'fields':{}}}
 
