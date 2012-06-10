@@ -35,3 +35,12 @@ class TestView3(SuperView):
     def test_method2(self, text):
         return text
 
+
+from superview.stream import stream_view
+
+class StreamView(SuperView):
+    @stream_view(content_type="text/plain")
+    def get(self, request):
+        for line in ["hola", "mundo"]:
+            yield line
+    

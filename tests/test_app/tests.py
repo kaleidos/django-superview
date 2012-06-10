@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
+from django.test.client import RequestFactory
 from django.utils import unittest
 from django.core.urlresolvers import reverse
 
 from django import forms
-import json
+import json, types
 
 from superview.views import SuperView
-
 
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import utc, now, override
 import pytz
+
+from .views import StreamView
 
 class TestSuperView(TestCase):
     def test_first_method(self):
@@ -127,6 +129,18 @@ class TestSuperView(TestCase):
         self.assertIn('global', data['errors'])
         self.assertEqual(len(data['errors']['global']), 1)
         self.assertIn('fields', data['errors'])
+
+    def test_stream_view(self):
+        self.factory = RequestFactory()
+
+        request = self.factory.get("/")
+        view = StreamView.as_view()
+
+        response = view(request)
+        self.assertEqual(response.content, "holamundo")
+
+        response = StreamView().get(request)
+        self.assertTrue(isinstance(response._container, types.GeneratorType))
 
     def test_json_tz(self):
         view = SuperView()
