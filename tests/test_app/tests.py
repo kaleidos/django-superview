@@ -4,6 +4,8 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.utils import unittest
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
+from django.db import models
 
 from django import forms
 import json, types
@@ -30,7 +32,7 @@ class TestSuperView(TestCase):
 
         self.assertEqual(response.content,
             u'<div>selected</div>\n<span></span>\n')
-    
+
     def test_view_method(self):
         url = reverse('test-home3')
         response = self.client.get(url)
@@ -65,14 +67,14 @@ class TestSuperView(TestCase):
 
         form = TestForm({'foo':'a'})
         self.assertFalse(form.is_valid())
-        
+
         view = SuperView()
         data = view.render_json_error(form.errors)
         data = json.loads(data.content)
 
         self.assertIn('errors', data)
         self.assertIn('success', data)
-        
+
         self.assertFalse(data['success'])
         self.assertTrue(isinstance(data['errors'], dict))
 
@@ -83,7 +85,7 @@ class TestSuperView(TestCase):
         self.assertTrue(isinstance(data['errors']['form'], dict))
 
         self.assertIn('foo', data['errors']['form'])
-            
+
     def test_json_error_response_1(self):
         class TestForm(forms.Form):
             foo = forms.IntegerField(required=True)
@@ -93,7 +95,7 @@ class TestSuperView(TestCase):
 
         form = TestForm({'foo':'a'})
         self.assertFalse(form.is_valid())
-        
+
         view = SuperView()
         data = view.render_json_error(form.errors)
         data = json.loads(data.content)
@@ -110,7 +112,7 @@ class TestSuperView(TestCase):
         self.assertEqual(len(data['errors']['global']), 2)
         self.assertIn('ff', data)
         self.assertIn('test2', data['errors']['global'])
-    
+
     def test_json_error_response_2(self):
         class TestForm(forms.Form):
             foo = forms.IntegerField(required=True, label="Jojoo")
@@ -120,7 +122,7 @@ class TestSuperView(TestCase):
 
         form = TestForm({'foo':'a'})
         self.assertFalse(form.is_valid())
-        
+
         view = SuperView()
         data = view.render_json_error(form.errors, form=form)
         data = json.loads(data.content)
@@ -128,6 +130,39 @@ class TestSuperView(TestCase):
         self.assertIn('errors',  data)
         self.assertIn('global', data['errors'])
         self.assertEqual(len(data['errors']['global']), 1)
+        self.assertIn('fields', data['errors'])
+
+    def test_json_error_response_3(self):
+        class TestForm(forms.Form):
+            foo = forms.IntegerField(required=True, label=u"Fòó")
+
+        form = TestForm({'foo':'a'})
+        view = SuperView()
+        data = view.render_json_error(form.errors, form=form)
+        data = json.loads(data.content)
+
+        self.assertIn('errors',  data)
+        self.assertIn('global', data['errors'])
+        self.assertIn('fields', data['errors'])
+
+
+    def test_json_error_response_4(self):
+        class TestModel(models.Model):
+            foo = models.IntegerField(_(u"Fóò"))
+
+        class TestForm(forms.ModelForm):
+            class Meta:
+                model = TestModel
+
+        form = TestForm({'foo':'a'})
+        view = SuperView()
+        data = view.render_json_error(form.errors, form=form)
+        data = json.loads(data.content)
+
+        print data
+
+        self.assertIn('errors',  data)
+        self.assertIn('global', data['errors'])
         self.assertIn('fields', data['errors'])
 
     def test_stream_view(self):

@@ -43,4 +43,3 @@ class StreamView(SuperView):
     def get(self, request):
         for line in ["hola", "mundo"]:
             yield line
-    
