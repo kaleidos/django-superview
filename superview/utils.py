@@ -3,12 +3,16 @@
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
-from django.utils.timezone import localtime
+
+try:
+    from django.utils.timezone import localtime
+except ImportError:
+    localtime = lambda x: x
 
 import datetime
 
 class LazyEncoder(DjangoJSONEncoder):
-    """ 
+    """
     JSON encoder class for encode correctly traduction strings.
     Is for ajax response encode.
     """
