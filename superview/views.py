@@ -60,7 +60,7 @@ class JSONMixin(object):
         json for javascript form validators.
 
         How to use this::
-            
+
             class MyView(SuperView):
                 def post(request):
                     form = MyForm()
@@ -93,7 +93,7 @@ class JSONMixin(object):
             if form:
                 for field in response_dict['errors']['form'].keys():
                     response_dict['errors']['fields'][field] = {'name': form[field].label}
-                
+
         if aditional:
             response_dict['errors']['global'].extend(aditional)
 
@@ -109,7 +109,7 @@ class ResponseMixin(object):
     def get_context(self):
         return {'view': self}
 
-    def render_to_response(self, template=None, context={}, **kwargs):  
+    def render_to_response(self, template=None, context={}, **kwargs):
         template = template if template else self.template_path
         context = context if context else {}
 

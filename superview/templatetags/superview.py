@@ -21,8 +21,13 @@ def call_view_method(context, method_name, *args, **kwargs):
 
 
 @register.simple_tag(name="as_json")
-def as_json(data):
+def as_json(data, **kwargs):
     if isinstance(data, types.GeneratorType):
         data = tuple(data)
-    json_data = json.dumps(data, cls=LazyEncoder)
+
+    params = {}
+    if "pretty" in kwargs and kwargs["pretty"]:
+        params.update({"indent": 4, "sort_keys": True})
+
+    json_data = json.dumps(data, cls=LazyEncoder, **params)
     return mark_safe(json_data)
