@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import http
+from django import forms
 from django.views.generic import View
 from django.core.urlresolvers import reverse
 from django.utils.functional import Promise
@@ -12,11 +13,19 @@ from django.shortcuts import get_object_or_404, render_to_response
 
 from .settings import *
 from .menu import MenuActives
-from .utils import LazyEncoder
+from .utils import to_json
 
-import json
 import copy
 import datetime
+import warnings
+
+FORM_CLSS = [forms.Form]
+
+try:
+    from wtforms import Form as WTForm
+    FORM_CLSS.append(WTForm)
+except ImportError:
+    pass
 
 
 class MenuMixin(object):
@@ -67,10 +76,18 @@ class JSONMixin(object):
                     return self.render_json_error(form.errors)
         """
 
+        if form is not None:
+            warnings.warn("form parameter is deprecated, and will be "
+                          " completelly removed in future versions")
+
         assert isinstance(aditional, (list, tuple)), "aditional parameter must be a list or a tuple."
         assert isinstance(context, dict), "context parameter must be a dict"
 
         response_dict = {'success': False, 'errors': {'global':[], 'form':{}, 'fields':{}}}
+
+        if isinstance(errors_data, FORM_CLSS):
+            form = errors_data
+            errors_data = form.errors
 
         if isinstance(errors_data, (unicode, str, Promise)):
             response_dict['errors']['global'].extend([errors_data])
