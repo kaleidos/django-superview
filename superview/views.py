@@ -48,11 +48,8 @@ class JSONMixin(object):
         """
         Returns a JSON response containing 'context' as payload
         """
-        if not noformat:
-            return http.HttpResponse(json.dumps(context, indent=4, \
-                cls=LazyEncoder, sort_keys=True), mimetype="text/plain")
-        return http.HttpResponse(json.dumps(context, cls=LazyEncoder), \
-                                                    mimetype="text/plain")
+        return http.HttpResponse(to_json(context, noformat=noformat),
+                                                mimetype="text/plain")
 
     def render_json_error(self, errors_data, aditional=[], context={}, form=None):
         """

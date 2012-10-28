@@ -58,3 +58,9 @@ def ecma262_to_datetimne(value):
     dt = timezone.astimezone(timezone.utc)
     dt = timezone.utc.normalize(dt)
     return dt
+
+
+def to_json(data, noformat=True)
+    if not noformat:
+        return json.dumps(context, indent=4, cls=LazyEncoder, sort_keys=True)
+    return tjson.dumps(context, cls=LazyEncoder)
