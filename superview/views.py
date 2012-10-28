@@ -6,7 +6,6 @@ from django.views.generic import View
 from django.core.urlresolvers import reverse
 from django.utils.functional import Promise
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import force_unicode
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response

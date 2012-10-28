@@ -2,7 +2,13 @@
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.functional import Promise
-from django.utils.encoding import force_unicode
+
+# Python3 compatibility
+try:
+    from django.utils.encoding import force_unicode as force_text
+except ImportError:
+    from django.utils.encoding import force_text
+
 from django.utils import timezone
 import datetime
 
