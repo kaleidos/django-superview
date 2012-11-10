@@ -69,4 +69,4 @@ def ecma262_to_datetimne(value):
 def to_json(data, noformat=True):
     if not noformat:
         return json.dumps(context, indent=4, cls=LazyEncoder, sort_keys=True)
-    return tjson.dumps(context, cls=LazyEncoder)
+    return json.dumps(context, cls=LazyEncoder)
