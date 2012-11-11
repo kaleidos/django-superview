@@ -11,6 +11,7 @@ except ImportError:
 
 from django.utils import timezone
 import datetime
+import json
 
 
 class LazyEncoder(DjangoJSONEncoder):
@@ -66,7 +67,5 @@ def ecma262_to_datetimne(value):
     return dt
 
 
-def to_json(data, noformat=True):
-    if not noformat:
-        return json.dumps(context, indent=4, cls=LazyEncoder, sort_keys=True)
-    return json.dumps(context, cls=LazyEncoder)
+def to_json(data):
+    return json.dumps(data, cls=LazyEncoder)

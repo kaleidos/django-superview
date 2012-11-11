@@ -40,25 +40,7 @@ class MenuMixin(object):
         return context
 
 
-class JSONMixin(object):
-    def render_json(self, context={}, ok=True):
-        """
-        Serialize the context variable to json. Aditionally add ``success``
-        attribute with `True` value by default. This can changed with `ok`
-        parameter.
-        """
-
-        response = {'success': ok}
-        response.update(context)
-        return self._render_json(response)
-
-    def _render_json(self, context, noformat=True):
-        """
-        Returns a JSON response containing 'context' as payload
-        """
-        return http.HttpResponse(to_json(context, noformat=noformat),
-                                                mimetype="text/plain")
-
+class DJFormJsonMixin(object):
     def render_json_error(self, errors_data, aditional=[], context={}, form=None):
         """
         Helper method for serialize django form erros in a estructured and friendly
@@ -72,7 +54,7 @@ class JSONMixin(object):
                     if form.is_valid():
                         return self.render_json()
 
-                    return self.render_json_error(form.errors)
+                    return self.render_json_error(form)
         """
 
         if form is not None:
@@ -113,7 +95,23 @@ class JSONMixin(object):
         if context:
             response_dict.update(context)
 
-        return self._render_json(response_dict)
+        return self.render_json(response_dict)
+
+
+class JSONMixin(object):
+    def render_json(self, context={}, ok=True, mimetype="text/plain; charset=utf-8",
+                                    response_cls=http.HttpResponse, response_kwargs={}):
+        """
+        Serialize the context variable to json. Aditionally add ``success``
+        attribute with `True` value by default. This can changed with `ok`
+        parameter.
+        """
+
+        response = {'success': ok}
+        response.update(context)
+
+        return response_cls(to_json(response), mimetype=mimetype,
+                                                **response_kwargs)
 
 
 class ResponseMixin(object):
@@ -137,5 +135,5 @@ class ResponseMixin(object):
         return http.HttpResponseRedirect(url)
 
 
-class SuperView(JSONMixin, MenuMixin, ResponseMixin, View):
+class SuperView(DJFormJsonMixin, JSONMixin, MenuMixin, ResponseMixin, View):
     pass
