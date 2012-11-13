@@ -22,7 +22,7 @@ class LazyEncoder(DjangoJSONEncoder):
 
     def default(self, obj):
         if isinstance(obj, Promise):
-            return force_unicode(obj)
+            return force_text(obj)
         elif isinstance(obj, datetime.datetime):
             obj = timezone.localtime(obj)
         return super(LazyEncoder, self).default(obj)

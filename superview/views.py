@@ -18,14 +18,13 @@ import copy
 import datetime
 import warnings
 
-FORM_CLSS = [forms.Form]
+FORM_CLSS = (forms.Form,)
 
 try:
     from wtforms import Form as WTForm
-    FORM_CLSS.append(WTForm)
+    FORM_CLSS += (WTForm,)
 except ImportError:
     pass
-
 
 class MenuMixin(object):
     def __init__(self, *args, **kwargs):
