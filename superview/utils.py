@@ -41,7 +41,7 @@ def datetime_to_ecma262(value):
     return r
 
 
-def ecma262_to_datetimne(value):
+def ecma262_to_datetime(value):
     """
     Convert ecma-262 javascript format to
     correct python datetime format.
