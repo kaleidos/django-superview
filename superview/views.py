@@ -26,6 +26,7 @@ try:
 except ImportError:
     pass
 
+
 class MenuMixin(object):
     def __init__(self, *args, **kwargs):
         class_menu = getattr(self, SV_CONTEXT_VARNAME, [])
@@ -63,7 +64,7 @@ class DJFormJsonMixin(object):
         assert isinstance(aditional, (list, tuple)), "aditional parameter must be a list or a tuple."
         assert isinstance(context, dict), "context parameter must be a dict"
 
-        response_dict = {'success': False, 'errors': {'global':[], 'form':{}, 'fields':{}}}
+        response_dict = {'errors': {'global':[], 'form':{}, 'fields':{}}}
 
         if isinstance(errors_data, FORM_CLSS):
             form = errors_data
@@ -94,11 +95,11 @@ class DJFormJsonMixin(object):
         if context:
             response_dict.update(context)
 
-        return self.render_json(response_dict)
+        return self.render_json(response_dict, ok=False)
 
 
 class JSONMixin(object):
-    def render_json(self, context={}, ok=True, mimetype="text/plain; charset=utf-8",
+    def render_json(self, context={}, ok=True, mimetype="application/json; charset=utf-8",
                                     response_cls=http.HttpResponse, response_kwargs={}):
         """
         Serialize the context variable to json. Aditionally add ``success``
